@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ClientHandler {
     private Socket socket;
@@ -44,9 +46,7 @@ public class ClientHandler {
                                     // отправляем сообщение об успешной авторизации
                                     name = newNick;
                                     sendMSG("/authok " + name);
-
                                     System.out.println("/auth_ok_send");
-                                    //server.subscribe(ClientHandler.this);
                                     setAuthorized(true);
                                     break;
                                 }else{
@@ -58,6 +58,21 @@ public class ClientHandler {
                         }else if(str.startsWith("/register"))
                         {
                             String[] elements = str.split(" ");
+                            String log = elements[1];
+                            String nick = elements[3];
+                            if(!DataBaseHelper.isUsed("login",log)&&!DataBaseHelper.isUsed("nickname",nick)) {
+                                DataBaseHelper.addToDB(elements[1], elements[2], elements[3]);
+                                sendMSG("/register_ok"+" "+nick);
+                            }else {
+                                if(DataBaseHelper.isUsed("login",log)){
+                                    String msg = "Логин уже используется";
+                                    sendMSG("/register_fail"+" "+msg);
+                                }else{
+                                    String msg = "Ник уже используется";
+                                    sendMSG("/register_fail"+" "+msg);
+                                }
+
+                            }
 
 
                         }
@@ -71,10 +86,29 @@ public class ClientHandler {
                             break;
                         } else if (str.startsWith("/w")) {
                             String[] elements = str.split(" ");
-                            server.broadcast("From " + name + "to " + elements[2], name, elements[1]);
+                            int sizeMess = elements[0].length()+elements[1].length() + 1;
+                            String messStr = str.substring(sizeMess);
+                            server.broadcast("From " + name + "to " + elements[1]+messStr, name, elements[1]);
+                            DataBaseHelper.addHistoryToDB(timestamp(),name,elements[1],messStr);
 
-                        } else {
+                        }else if(str.startsWith("/history")){
+                            String[] elements = str.split(" ");
+                            ArrayList<String> arrStr = new ArrayList<>();
+                            StringBuffer stringBuffer  = new StringBuffer();
+                            arrStr = DataBaseHelper.receiveFromDB(elements[1]);
+                            for(int i = 0; i < arrStr.size();i++)
+                            {
+                                stringBuffer.append(arrStr.get(i));
+                            }
+                            System.out.println(stringBuffer.toString());
+                            String strFromHistory = stringBuffer.toString();
+                            sendMSG("/history_ok" + strFromHistory);
+
+                        }
+                        else {
                             server.broadcast("Client: " + name + " " + str);
+                            DataBaseHelper.addHistoryToDB(timestamp(),name,"ALL",str);
+
                         }
                     }
                     setAuthorized(false);
@@ -124,5 +158,10 @@ public class ClientHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private static String timestamp() {
+        Calendar calendar = Calendar.getInstance();
+        java.sql.Timestamp timeStamp = new java.sql.Timestamp(calendar.getTime().getTime());
+        return timeStamp.toString();
     }
 }

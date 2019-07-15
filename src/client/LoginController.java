@@ -19,7 +19,9 @@ import java.io.IOException;
 
 public class LoginController {
     private ChatController chatController;
-    @FXML    private Button bLogin;
+    private RegisterController registerController;
+
+    @FXML   private Button bLogin;
     @FXML   private TextField tfLogin;
     @FXML   private TextField tfPass;
     @FXML private Label lResponse;
@@ -33,6 +35,7 @@ public class LoginController {
     public static LoginController getInstance() {
         return instance;
     }
+
     public void showResponse(String message) {
         Platform.runLater(() -> {
             this.lResponse.setText(message);
@@ -70,17 +73,39 @@ public class LoginController {
         });
     }
 
-    public void regIn(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fmxlLoader = new FXMLLoader(getClass().getClassLoader().getResource("./forms/ChatForm.fxml"));
-        Parent window = (BorderPane) fmxlLoader.load();
-        this.chatController = fmxlLoader.<ChatController>getController();
+    public void regIn() throws IOException {
+        Platform.runLater(() -> {
+            FXMLLoader fmxlLoader = new FXMLLoader(getClass().getClassLoader().getResource("./forms/RegisterForm.fxml"));
+            Parent window = null;
+            try {
+                window = (BorderPane) fmxlLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Stage stage = Main.getStage();
 
-        ClientConnection clientConnection = new ClientConnection(tfLogin.getText(), tfPass.getText(), this.chatController);
-        clientConnection.setRegister(true);
-        Thread x = new Thread(clientConnection);
-        x.start();
+            stage.setResizable(false);
+            stage.setScene(new Scene(window));
+            stage.setMinWidth(350);
+            stage.setMinHeight(250);
+            stage.setWidth(400);
+            stage.setHeight(300);
+            stage.centerOnScreen();
+        });
 
-        this.scene = new Scene(window);
 
     }
 }
+//    public void regIn(ActionEvent actionEvent) throws IOException {
+//        FXMLLoader fmxlLoader = new FXMLLoader(getClass().getClassLoader().getResource("./forms/ChatForm.fxml"));
+//        Parent window = (BorderPane) fmxlLoader.load();
+//        this.chatController = fmxlLoader.<ChatController>getController();
+//
+//        ClientConnection clientConnection = new ClientConnection(tfLogin.getText(), tfPass.getText(), this.chatController);
+//        clientConnection.setRegister(true);
+//        Thread x = new Thread(clientConnection);
+//        x.start();
+//
+//        this.scene = new Scene(window);
+
+//    }

@@ -15,6 +15,7 @@ public class ClientConnection implements Runnable{
     private static String pass;
     private static String login;
     private static String nick;
+    private static String nickReg;
     private Boolean register;
 
     ClientConnection(String tfLogintext, String tfPass, ChatController chatController){
@@ -23,10 +24,10 @@ public class ClientConnection implements Runnable{
         this.login = tfLogintext;
         this.register = false;
     }
-
+    public void setNickRegister(String nickReg){this.nickReg = nickReg;}
     private void login() {sendMessage("/auth " + ClientConnection.login + " " + ClientConnection.pass); }
     private void register() {
-        sendMessage("/register " + ClientConnection.login + " " + ClientConnection.pass);
+        sendMessage("/register " + ClientConnection.login + " " + ClientConnection.pass + " " +ClientConnection.nickReg);
     }
     public void setRegister(Boolean register) {
         this.register = register;
@@ -66,6 +67,13 @@ public class ClientConnection implements Runnable{
                     }else if(str.startsWith("/users_list")){
                         String[] users = str.split(" ");
                         this.chatController.setUsersList(Arrays.copyOfRange(users,1,users.length));
+                    }else if(str.startsWith("/history_ok"))
+                    {
+                        //System.out.println("Вошли в историю");
+                        String resp = str.substring(11);
+                        //System.out.println(resp);
+                        this.chatController.createHistory(resp);
+
                     }
                     else {
                         this.chatController.addMessage(str);
@@ -82,6 +90,15 @@ public class ClientConnection implements Runnable{
                         String response = str.substring(10);
                         LoginController.getInstance().showResponse(response);
 
+                    }else if(str.startsWith("/register_ok"))
+                    {
+                        //откроем форму логинконтроллера
+                        RegisterController.getInstance().showLogin();
+                    }else if(str.startsWith("/register_fail"))
+                    {
+                        //подсветим на форме регистрации
+                        String resp = str.substring(15);
+                        RegisterController.getInstance().showResponse(resp);
                     }
                 }
 

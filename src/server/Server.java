@@ -15,6 +15,7 @@ public class Server {
 
         clients = new ArrayList<>();
         DataBaseHelper.connect();
+        DataBaseHelper.createTable();
         System.out.println(DataBaseHelper.getNickByLoginAndPass("login1","pass1"));
         try{
             server = new ServerSocket(PORT);

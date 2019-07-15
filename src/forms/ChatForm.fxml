@@ -36,10 +36,11 @@
         <HBox>
             <TextField fx:id="tfMessage" HBox.hgrow="ALWAYS" onAction="#sendButtonAction" >
                 <HBox.margin>
-                    <Insets right="10.0" />
+                    <Insets right="20.0" />
                 </HBox.margin>
             </TextField>
             <Button onAction="#sendButtonAction" prefWidth="100" text="Послать" />
+            <Button onAction="#loadHistoryFromDB" prefWidth="100" text="история" />
         </HBox>
     </bottom>
 </BorderPane>
