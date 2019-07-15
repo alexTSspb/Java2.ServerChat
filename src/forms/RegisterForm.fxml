@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+
+<?import javafx.scene.control.Label?>
+<BorderPane prefHeight="150.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.RegisterController">
+    <top>
+
+        <TextField fx:id="tfLogin" promptText="Введите логин"/>
+
+    </top>
+    <center>
+        <BorderPane>
+            <left>
+                <TextField fx:id = "tfPass1" promptText="Введите пароль"/>
+            </left>
+            <right>
+                <TextField fx:id="tfPass2" promptText="Повторите пароль"/>
+            </right>
+
+            <bottom>
+                <TextField fx:id="tfNickName" promptText="Введите ник"/>
+            </bottom>
+        </BorderPane>
+    </center>
+    <bottom>
+        <BorderPane>
+            <left>
+                <Button fx:id="tbButton" text="Зарегистрировать" onAction="#onRegister"/>
+
+            </left>
+            <right>
+                <Label fx:id="lbWarning" text="Зарегистрируйтесь на Здоровье"/>
+
+            </right>
+        </BorderPane>
+    </bottom>
+
+
+</BorderPane>
